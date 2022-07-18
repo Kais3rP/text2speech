@@ -116,7 +116,7 @@ export class SpeechSynth extends EventEmitter {
           )[0]
         : this.state.voices[0];
 
-    /* Add HTML highlight tags if SSR is off, in SSR the tags are added serverside invoking the method ".addHTMLHighlightTags" 
+    /* Add HTML highlight tags if SSR is off, in SSR the tags are added server side invoking the method ".addHTMLHighlightTags" 
     on stringified HTML */
 
     if (this.options.isHighlightTextOn && !this.options.isSSROn)
@@ -583,8 +583,8 @@ export class SpeechSynth extends EventEmitter {
       code = code
         .split('\n') // Add br break line in place of \n
         .join('<br/>')
-        .replace(/\(\s*(.+?)\s*\)/g, (_, b) => `(${b})`) // Fix extra spaces in () parens to avoid higlighting extra characters
-        .replace(/\s+([;.,:]+?)/g, (_, b) => b) // Fix extra spaces in [] parens to avoid higlighting extra characters
+        .replace(/\(\s*(.+?)\s*\)/g, (_, b) => `(${b})`) // Fix extra spaces in () parens to avoid highlighting extra characters
+        .replace(/\s+([;.,:]+?)/g, (_, b) => b) // Fix extra spaces in [] parens to avoid highlighting extra characters
         .replace(/<.+?>/g, (match) => '#' + match.replace(/\s/g, '@@') + '#') // Separate html tags and add @@ symbol to spaces inside HTML tags
         .replace(/(\d+\.\d+)(\w*)/, (_, a, b) => a + ' ' + b) // Separate numbers from measures units e.g. 1.7k -> 1.7 k since the reader ha issues reading that format
         .split(/[#\s]/)
