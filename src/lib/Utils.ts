@@ -23,7 +23,7 @@ export class Utils {
   /* Regex Utils */
 
   static isPunctuation(str: string): boolean {
-    return /^\s*[\.,;:]+\s*$/.test(str);
+    return /^\s*[.,;:]+\s*$/.test(str);
   }
   static isTag(str: string): boolean {
     return /<.+?>/.test(str);
