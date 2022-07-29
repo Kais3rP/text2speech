@@ -5,7 +5,7 @@
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
   "module": "build/module/index.js",
-  "repository": "https://github.com/YOUR_GITHUB_USER_NAME/text2speech",
+  "repository": "https://github.com/kais3rp/text2speech",
   "license": "MIT",
   "keywords": [],
   "publishConfig": {
