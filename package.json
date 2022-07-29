@@ -1,5 +1,5 @@
 {
-  "name": "@kais3rp/text2speech",
+  "name": "text2speech",
   "version": "1.0.1",
   "description": "Text to speech library, framework agnostic.",
   "main": "build/main/index.js",
