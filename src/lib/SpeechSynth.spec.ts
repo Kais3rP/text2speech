@@ -63,7 +63,7 @@ test('Is Class correctly initialized', async (t) => {
   t.true(r instanceof SpeechSynth && r === s);
 });
 
-test('Are HTML Highlight tags correctly added clientside - [case:] simple <p> tags text', async (t) => {
+test('Are HTML Highlight tags correctly added client side - [case:] simple <p> tags text', async (t) => {
   const textContainer = document.createElement('div');
 
   const body = `<p>Some text inside a paragraph</p>`;
@@ -80,7 +80,7 @@ test('Are HTML Highlight tags correctly added clientside - [case:] simple <p> ta
   t.deepEqual(textContainer.innerHTML, highlighted);
 });
 
-test('Are HTML Highlight tags correctly added serverside - [case:] simple <p> tags text', async (t) => {
+test('Are HTML Highlight tags correctly added server side - [case:] simple <p> tags text', async (t) => {
   const body = `<p>Some text inside a paragraph</p>`;
 
   const highlighted = `<p> <span data-id="1">Some</span> <span data-id="2">text</span> <span data-id="3">inside</span> <span data-id="4">a</span> <span data-id="5">paragraph</span> </p> `;
@@ -89,7 +89,7 @@ test('Are HTML Highlight tags correctly added serverside - [case:] simple <p> ta
   t.deepEqual(_highlighted, highlighted);
 });
 
-test('Are HTML Highlight tags correctly added serverside - [case:] nested <u> and <em> tags text', async (t) => {
+test('Are HTML Highlight tags correctly added server side - [case:] nested <u> and <em> tags text', async (t) => {
   const body = `<p>Some <u>nested</u> <em>text</em> inside a paragraph</p>`;
 
   const highlighted = `<p> <span data-id="1">Some</span> <u> <span data-id="2">nested</span> </u> <em> <span data-id="3">text</span> </em> <span data-id="4">inside</span> <span data-id="5">a</span> <span data-id="6">paragraph</span> </p> `;
