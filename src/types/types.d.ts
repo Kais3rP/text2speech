@@ -19,10 +19,10 @@ import { SpeechSynth } from '../lib/SpeechSynth';
  * something();
  * ```
  */
-declare module 'module-name' {
-  const whatever: any;
-  export = whatever;
-}
+/* declare module 'window' {
+  type Window = any;
+  export = Window;
+} */
 
 declare global {
   type Params = ISettings & IEvents & IOptions;
@@ -46,11 +46,11 @@ declare global {
   }
 
   interface ISettings {
-    pitch: number;
-    rate: number;
-    language: string;
-    voiceURI: string;
-    volume: number;
+    pitch?: number;
+    rate?: number;
+    language?: string;
+    voiceURI?: string;
+    volume?: number;
   }
 
   interface IEvent {
@@ -82,7 +82,6 @@ declare global {
   type Timeout = ReturnType<typeof setTimeout>;
 
   interface IHighlightOptions {
-    ssr?: boolean;
     excludeCodeTags?: boolean;
   }
 

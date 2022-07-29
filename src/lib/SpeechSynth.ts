@@ -44,7 +44,7 @@ export class SpeechSynth extends EventEmitter {
     /* Instances */
 
     this.synth = window.speechSynthesis;
-    this.utterance = new SpeechSynthesisUtterance();
+    this.utterance = new window.SpeechSynthesisUtterance();
 
     /* Tick state */
 
@@ -103,78 +103,83 @@ export class SpeechSynth extends EventEmitter {
   async init() {
     /* Get voices */
 
-    this.state.voices = await this.getVoices();
-    this.state.voices = this.state.voices.filter(
-      (voice) => voice.lang === this.settings.language
-    );
+    try {
+      this.state.voices = await this.getVoices();
+      this.state.voices = this.state.voices.filter(
+        (voice) => voice.lang === this.settings.language
+      );
 
-    this.state.voice =
-      this.state.voices.filter((v) => v.voiceURI === this.settings.voiceURI)
-        .length > 0
-        ? this.state.voices.filter(
-            (v) => v.voiceURI === this.settings.voiceURI
-          )[0]
-        : this.state.voices[0];
+      this.state.voice =
+        this.state.voices.filter((v) => v.voiceURI === this.settings.voiceURI)
+          .length > 0
+          ? this.state.voices.filter(
+              (v) => v.voiceURI === this.settings.voiceURI
+            )[0]
+          : this.state.voices[0];
 
-    /* Add HTML highlight tags if SSR is off, in SSR the tags are added server side invoking the method ".addHTMLHighlightTags" 
+      /* Add HTML highlight tags if SSR is off, in SSR the tags are added server side invoking the method ".addHTMLHighlightTags" 
     on stringified HTML */
 
-    if (this.options.isHighlightTextOn && !this.options.isSSROn)
-      SpeechSynth.addHTMLHighlightTags(this.textContainer, { ssr: false });
+      if (this.options.isHighlightTextOn && !this.options.isSSROn)
+        SpeechSynth.addHTMLHighlightTags(this.textContainer);
 
-    /* Init state properties */
-    /* Get the total number of words to highlight */
+      /* Init state properties */
+      /* Get the total number of words to highlight */
 
-    this.state.numberOfWords = this.retrieveNumberOfWords(
-      this.textContainer,
-      '[data-id]'
-    );
+      this.state.numberOfWords = this.retrieveNumberOfWords(
+        this.textContainer,
+        '[data-id]'
+      );
 
-    /* Get the whole raw text */
+      /* Get the whole raw text */
 
-    this.state.wholeText = this.retrieveWholeText(
-      this.textContainer,
-      '[data-id]'
-    );
+      this.state.wholeText = this.retrieveWholeText(
+        this.textContainer,
+        '[data-id]'
+      );
 
-    /* Get the total estimated duration of reading */
+      /* Get the total estimated duration of reading */
 
-    this.state.duration = this.getTextDuration(
-      this.state.wholeText,
-      this.settings.rate
-    );
+      this.state.duration = this.getTextDuration(
+        this.state.wholeText,
+        this.settings.rate
+      );
 
-    /* Get the array of words that will be read */
+      /* Get the array of words that will be read */
 
-    this.state.wholeTextArray = this.retrieveWholeTextArray(
-      this.textContainer,
-      '[data-id]'
-    );
+      this.state.wholeTextArray = this.retrieveWholeTextArray(
+        this.textContainer,
+        '[data-id]'
+      );
 
-    /* -------------------------------------------------------------------- */
+      /* -------------------------------------------------------------------- */
 
-    /* Add listeners */
+      /* Add listeners */
 
-    this.utterance.onboundary = this.handleBoundary.bind(this);
+      this.utterance.onboundary = this.handleBoundary.bind(this);
 
-    /* Attach click event listener to words */
+      /* Attach click event listener to words */
 
-    this.attachEventListenersToWords(this.textContainer, '[data-id]', {
-      type: 'click',
-      fn: (e) => {
-        this.emit('word-click', this, e);
-      },
-    });
+      this.attachEventListenersToWords(this.textContainer, '[data-id]', {
+        type: 'click',
+        fn: (e) => {
+          this.emit('word-click', this, e);
+        },
+      });
 
-    this.addCustomEventListeners();
+      this.addCustomEventListeners();
 
-    /* -------------------------------------------------------------------- */
+      /* -------------------------------------------------------------------- */
 
-    /* Init utterance settings */
+      /* Init utterance settings */
 
-    this.initUtterance();
+      this.initUtterance();
 
-    return this;
+      return this;
+    } catch (e) {
+      console.log('Init error', e);
+      return e;
+    }
   }
 
   /* @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -568,7 +573,10 @@ export class SpeechSynth extends EventEmitter {
 
   /*  Highlight  */
 
-  static addHTMLHighlightTags(node: Element, options: IHighlightOptions) {
+  static addHTMLHighlightTags(
+    node: Element | string,
+    options: IHighlightOptions = { excludeCodeTags: false }
+  ) {
     /* Add utils method to Array */
     Array.prototype.__join__ = Utils.__join__;
 
@@ -577,7 +585,7 @@ export class SpeechSynth extends EventEmitter {
     let code = '';
 
     try {
-      if (options?.ssr && typeof node === 'string') code = node;
+      if (typeof node === 'string') code = node;
       else if (typeof window !== 'undefined' && node instanceof HTMLElement)
         code = node.innerHTML;
       code = code
@@ -622,6 +630,7 @@ export class SpeechSynth extends EventEmitter {
           return ' '; // Space between HTML tags is interpreted as a &nbsp and the text content will render a space.
         })
         .replace(/@@/g, ' ');
+
       /* Apply the tags to the HTML DOM node if SSR is off */
       if (typeof window !== 'undefined' && node instanceof HTMLElement) {
         node.innerHTML = code;
